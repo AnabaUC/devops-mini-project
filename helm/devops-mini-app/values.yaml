@@ -1,0 +1,17 @@
+replicaCount: 2
+image:
+  repository: YOUR_ECR_REPOSITORY/devops-mini-app
+  tag: "IMAGE_TAG"
+  pullPolicy: IfNotPresent
+service:
+  port: 80
+  targetPort: 3000
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+resources:
+  requests: {cpu: 100m, memory: 128Mi}
+  limits: {cpu: 500m, memory: 256Mi}

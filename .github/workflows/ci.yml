@@ -1,0 +1,21 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main, dev]
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Install dependencies
+        run: cd app && npm install
+      - name: Smoke test
+        run: node -e "const p=require('./app/package.json'); if(!p.scripts.start) process.exit(1); console.log('package OK')"
+      - name: Build Docker image
+        run: docker build -t devops-mini-app:${{ github.sha }} .

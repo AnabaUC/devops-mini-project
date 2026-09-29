@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-mini-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR_GITHUB_USER/devops-mini-project.git
+    targetRevision: main
+    path: helm/devops-mini-app
+    helm:
+      values: |
+        image:
+          repository: YOUR_ECR_REPOSITORY/devops-mini-app
+          tag: "IMAGE_TAG"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: devops
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
